@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>URL Shortener</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.11/dist/htmx.min.js"
+        integrity="sha384-2OatzQy1H+Zd/IIrjr1TcuDGqLXeHhbooAyJY1KdQMKnr4LZ22k31GBLdYKHmVjg"
+        crossorigin="anonymous">
+    </script>
+
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+
+        .app {
+            max-width: 800px;
+        }
+
+        .url-row {
+            transition: background-color 0.15s ease;
+        }
+
+        .url-row:hover {
+            background-color: #f8f9fa;
+        }
+
+        .short-url {
+            font-family: monospace;
+            font-weight: 600;
+        }
+
+        .target-url {
+            color: #6c757d;
+            word-break: break-all;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container app py-5">
+
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h1 class="fw-bold mb-2">URL Shortener</h1>
+            <p class="text-secondary mb-0">
+                Create short, memorable links.
+            </p>
+        </div>
+
+        <!-- Create URL -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4">
+
+                <form
+                    hx-post="/shorten"
+                    hx-target="#result"
+                    hx-swap="innerHTML"
+                    class="row g-3">
+
+                    <div class="col-12">
+                        <label for="targetUrl" class="form-label">
+                            Target URL
+                        </label>
+
+                        <input
+                            id="targetUrl"
+                            name="TargetUrl"
+                            type="url"
+                            class="form-control"
+                            placeholder="https://example.com/very/long/url"
+                            minlength="9"
+                            required>
+                    </div>
+
+                    <div class="col-md-8">
+                        <label for="shortUrl" class="form-label">
+                            Short URL
+                        </label>
+
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                /
+                            </span>
+
+                            <input
+                                id="shortUrl"
+                                name="ShortUrl"
+                                class="form-control"
+                                placeholder="my-link"
+                                minlength="3"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100">
+                            Shorten URL
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-0 pt-4 px-4">
+                <h5 class="mb-0">Your URLs</h5>
+            </div>
+
+            <div class="card-body p-0">
+                <div id="result">
+
+                    {{ range . }}
+                    <div class="url-row border-top px-4 py-3">
+
+                        <div class="d-flex justify-content-between align-items-start gap-3">
+
+                            <div class="flex-grow-1 overflow-hidden">
+
+                                <div class="mb-1">
+                                    <a
+                                        href="/{{ .ShortURL }}"
+                                        class="short-url text-decoration-none">
+                                        /{{ .ShortURL }}
+                                    </a>
+                                </div>
+
+                                <div class="target-url small">
+                                    {{ .TargetURL }}
+                                </div>
+
+                            </div>
+
+                            <button
+                                hx-delete="/{{ .ShortURL }}"
+                                hx-target="closest .url-row"
+                                hx-swap="outerHTML"
+                                class="btn btn-sm btn-outline-danger flex-shrink-0">
+                                Delete
+                            </button>
+
+                        </div>
+
+                    </div>
+                    {{ end }}
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+</body>
+</html>

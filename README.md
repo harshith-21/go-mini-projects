@@ -8,5 +8,10 @@ A lightweight URL shortener built with a Go backend and HTMX frontend. It suppor
 
 ```bash
 cd url-shortner
-go run main.go
+docker compose up
 ```
+
+![](images/url-shortner-1.png)
+
+![](images/url-shortner-2.png)
+

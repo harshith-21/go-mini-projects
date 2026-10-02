@@ -1,0 +1,9 @@
+services:
+  url-shortener:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      REDIR_SLEEP: "3"

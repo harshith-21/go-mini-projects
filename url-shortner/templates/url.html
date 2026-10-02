@@ -1,0 +1,31 @@
+<div class="url-row border-top px-4 py-3">
+
+    <div class="d-flex justify-content-between align-items-start gap-3">
+
+        <div class="flex-grow-1 overflow-hidden">
+
+            <div class="mb-1">
+                <a
+                    href="/{{ .ShortURL }}"
+                    class="short-url text-decoration-none">
+                    /{{ .ShortURL }}
+                </a>
+            </div>
+
+            <div class="target-url small">
+                {{ .TargetURL }}
+            </div>
+
+        </div>
+
+        <button
+            hx-delete="/{{ .ShortURL }}"
+            hx-target="closest .url-row"
+            hx-swap="outerHTML"
+            class="btn btn-sm btn-outline-danger flex-shrink-0">
+            Delete
+        </button>
+
+    </div>
+
+</div>

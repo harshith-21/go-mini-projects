@@ -27,20 +27,26 @@ func homePageHandler(data *[]Entry) http.HandlerFunc {
 
 func shortenHandler(data *[]Entry) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		TargetURL := r.FormValue("TargetUrl")
-		ShortURL := r.FormValue("ShortUrl")
+		targetURL := r.FormValue("TargetUrl")
+		shortURL := r.FormValue("ShortUrl")
 
-		*data = append(*data, Entry{ShortURL: ShortURL, TargetURL: TargetURL})
+		entry := Entry{
+			ShortURL:  shortURL,
+			TargetURL: targetURL,
+		}
 
-		for _, ele := range *data {
-			fmt.Fprintf(w, `
-				<div>
-					<a href="%s">
-						/%s
-					</a>
-					-> %s
-				</div>
-			`, ele.TargetURL, ele.ShortURL, ele.TargetURL)
+		*data = append(*data, entry)
+
+		tmpl := template.Must(
+			template.ParseFiles("templates/url.html"),
+		)
+
+		if err := tmpl.Execute(w, entry); err != nil {
+			http.Error(
+				w,
+				"Internal server error",
+				http.StatusInternalServerError,
+			)
 		}
 	}
 }
